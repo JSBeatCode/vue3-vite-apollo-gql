@@ -1,0 +1,8 @@
+mutation {
+  addCustomer(name: "Jane Smith", email: "jane@gmail.com", age: 28) {
+    id
+    name
+    email
+    age
+  }
+}

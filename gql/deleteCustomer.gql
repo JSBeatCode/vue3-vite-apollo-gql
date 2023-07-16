@@ -1,0 +1,8 @@
+mutation {
+  deleteCustomer(id: "1") {
+    id
+    name
+    email
+    age
+  }
+}
