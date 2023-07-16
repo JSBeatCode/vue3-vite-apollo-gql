@@ -19,7 +19,6 @@ export default {
     const customers = ref([]);
 
     const handleSubscription = () => {
-        console.log('jsdno0 debug1-1')
       subscribeToMore({
         document: gql`
           subscription OnCustomerAdded {
@@ -41,11 +40,9 @@ export default {
     };
 
     onUpdated(() => {
-      console.log('jsdno0 debug3-1', 'onupdated')
     })
 
     onMounted(() => {
-      console.log('jsdno0 debug1-1')
       customers.value = result.value?.getCustomers ?? [];
       handleSubscription();
     });

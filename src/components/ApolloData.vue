@@ -3,17 +3,20 @@ import { computed, onMounted, onUpdated, ref, reactive } from 'vue'
 import { useQuery, useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import ApolloDataMutationAdd from './ApolloDataMutationAdd.vue';
+import ApolloDataMutationUpdate from './ApolloDataMutationUpdate.vue';
 
 export default {
   name: 'ApolloData',
   components: {
-    ApolloDataMutationAdd
+    ApolloDataMutationAdd,
+    ApolloDataMutationUpdate
   },
   setup () {
     // const customersRef = ref([]);
     // const customersReactive = reactive([]);
     const state = reactive({
-      customers: []
+      customers: [],
+      customer: {},
     });
 
     const GET_ALL_QUERY = gql`
@@ -39,7 +42,6 @@ export default {
 
     onUpdated(() => {
       // console.log("state의 변화가 있을 때마다 updated", state.customers)
-      console.log('jsdno0 debug2-2 onUpdated')
     })
 
     onMounted(() => {
@@ -55,7 +57,6 @@ export default {
           }
         })
       }
-      console.log('jsdno0 debug2-1 onMounted')
     })
 
     const funcAdd = (val) => {
@@ -66,12 +67,31 @@ export default {
       state.customers.push(val);
     }
 
+    const funcUpdate = (val) => {
+      console.log('jsdno0 debug1-2 emit funcUpdate', val)
+      state.customer = {};
+    }
+
+    const funcUpdateStart = (id) => {
+      const one = state.customers.filter(one => one.id === id);
+      console.log('jsdno0 debug3-1', one[0])
+      state.customer = one[0];
+    }
+
 
     const deleteCustomer = async (id) => {
       try {
         await DeleteCustomer({ id: id });
         alert('delete completed: ', id)
-        state.customers = state.customers.filter(todo => id !== todo.id);
+        state.customers = state.customers.filter(one => id !== one.id);
+        if(state.customer && state.customer.id){
+          console.log('customer exists', state.customer)
+          console.log(state.customer.id, id, state.customer.id===id)
+          if (state.customer.id === id) {
+            console.log('id is identical')
+            state.customer = {};
+          }
+        }
       } catch (error) {
         console.error('Error deleting customer:', error.message);
       }
@@ -84,6 +104,8 @@ export default {
         onMounted,
         onUpdated,
         funcAdd,
+        funcUpdate,
+        funcUpdateStart,
         deleteCustomer,
         // DeleteCustomer
     }
@@ -106,27 +128,38 @@ export default {
 
     <div class="row">
       <div class="col" v-if="state.customers">
-        <h2>Customers<span class="badge text-bg-danger" style="font-size: 8px;">delete</span></h2>
+        <h2>
+          Customers
+          <span class="badge text-bg-success" style="font-size: 8px;">update</span>
+          <span class="badge text-bg-danger" style="font-size: 8px;">delete</span>
+        </h2>
         <ul class="list-group">
           <li v-for="customer of state.customers" :key="customer.id" class="list-group-item list-group-item-action text-start">
             id: {{ customer.id }} | name: {{ customer.name }} | email: {{ customer.email }} | age: {{ customer.age }}
+            <button class="badge bg-success rounded-pill" @click="funcUpdateStart(customer.id)">
+              U
+            </button>
             <button class="badge bg-danger rounded-pill" @click="deleteCustomer(customer.id)">
               X
             </button>
+            
           </li>
         </ul>
       </div>
       
       <div class="col">
         <ApolloDataMutationAdd 
-        @funcAdd="funcAdd"
+          @funcAdd="funcAdd"
         />
       </div>
     </div>
 
     <div class="row">
       <div class="col">
-        
+        <ApolloDataMutationUpdate 
+          @funcUpdate="funcUpdate"
+          :customer="state.customer"
+        />
       </div>
     </div>
   </div>

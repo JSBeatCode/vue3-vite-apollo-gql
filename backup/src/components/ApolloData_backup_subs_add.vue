@@ -21,7 +21,6 @@ export default {
 
     
     const handleSubscription = () => {
-    console.log('jsdno0 debug1-2')
       subscribeToMore({
         document: gql`
           subscription OnCustomerAdded {
@@ -34,7 +33,6 @@ export default {
           }
         `,
         updateQuery: (prev, { subscriptionData }) => {
-            console.log('jsdno0 debug1-3')
           if (!subscriptionData.data) return prev;
 
           const newCustomer = subscriptionData.data.customerAdded;
@@ -44,7 +42,6 @@ export default {
     };
 
     onMounted(() => {
-        console.log('jsdno0 debug1-1')
       customers.value = result.value?.getCustomers ?? [];
       handleSubscription();
     });
