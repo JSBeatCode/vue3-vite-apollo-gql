@@ -30,6 +30,7 @@
       </div>
       <div class="mb-3">
         <input id="email" type="text" 
+        @keyup="funcOnChange"
         @change="funcOnChange" v-model="state.customer.email" class="form-control" placeholder="Email" required>
       </div>
       <div class="mb-3">
@@ -113,8 +114,8 @@ export default {
       }
     };
 
-    const funcOnChange = () => {
-      console.log('funcOnChange, ', e.target);
+    const funcOnChange = (e) => {
+      console.log('funcOnChange, ', e);
     }
 
     onUpdated(()=>{
