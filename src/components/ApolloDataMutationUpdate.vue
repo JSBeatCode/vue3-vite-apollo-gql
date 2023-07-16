@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Update Customer</h2>
-    <form @submit.prevent="updateCustomer" class="mb-3">
+    <!-- <form @submit.prevent="updateCustomer" class="mb-3"> -->
       <!-- <div class="mb-3">
         <input v-model="props.customer.id" class="form-control" placeholder="Id" required readonly>
       </div>
@@ -15,21 +15,29 @@
         <input v-model.number="props.customer.age" type="number" class="form-control" placeholder="Age" required>
       </div> -->
       
-        <div class="mb-3">
-        <input v-model="state.customer.id" class="form-control" placeholder="Id" required readonly>
+      <div class="mb-3">
+        <input 
+        id="id" type="text" 
+        v-model="state.customer.id" 
+        class="form-control" placeholder="Id" required readonly>
       </div>
       <div class="mb-3">
-        <input v-model="state.customer.name" class="form-control" placeholder="Name" required>
+        <input 
+        id="name" type="text" 
+        v-model="state.customer.name" 
+        class="form-control" placeholder="Name" 
+        required >
       </div>
       <div class="mb-3">
-        <input v-model="state.customer.email" class="form-control" placeholder="Email" required>
+        <input id="email" type="text" 
+        @change="funcOnChange" v-model="state.customer.email" class="form-control" placeholder="Email" required>
       </div>
       <div class="mb-3">
-        <input v-model.number="state.customer.age" type="number" class="form-control" placeholder="Age" required>
+        <input id="age" type="number" @change="funcOnChange" v-model.number="state.customer.age" class="form-control" placeholder="Age" required >
       </div>
      
       <button type="submit" class="btn btn-primary" @click="updateCustomer">Update</button>
-    </form>
+    <!-- </form> -->
     <div v-if="loading" class="alert alert-info">Updating...</div>
     <div v-if="error" class="alert alert-danger">Error: {{ error.message }}</div>
   </div>
@@ -47,18 +55,18 @@ export default {
   },
   setup(props, {emit}) {
     const state = ref({
-      customer: {
-        id: props.customer.id,
-        name: props.customer.name,
-        email: props.customer.email,
-        age: props.customer.age,
-      }
       // customer: {
-      //   id: '',
-      //   name: '',
-      //   email: '',
-      //   age: 0,
+      //   id: props.customer.id,
+      //   name: props.customer.name,
+      //   email: props.customer.email,
+      //   age: props.customer.age,
       // }
+      customer: {
+        id: '',
+        name: '',
+        email: '',
+        age: 0,
+      }
     });
 
     // const customers = ref({
@@ -92,7 +100,7 @@ export default {
         console.log('Customer updated:', data.customer);
         
         emit('funcUpdate', data.customer);
-        
+
         state.value.customer.id = '';
         state.value.customer.name = '';
         state.value.customer.email = '';
@@ -105,8 +113,8 @@ export default {
       }
     };
 
-    const funcUpdateStart = () => {
-
+    const funcOnChange = () => {
+      console.log('funcOnChange, ', e.target);
     }
 
     onUpdated(()=>{
@@ -132,7 +140,8 @@ export default {
       error,
       result,
       onUpdated,
-      onMounted
+      onMounted,
+      funcOnChange
     };
   },
   emits: [
