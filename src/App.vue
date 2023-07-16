@@ -6,14 +6,19 @@ import ApolloData from './components/ApolloData.vue';
 <template>
   <div>
     <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
+      <img src="./assets/vite.svg" class="logo" alt="Vite logo" />
     </a>
     <a href="https://vuejs.org/" target="_blank">
       <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
     </a>
+    <a href="" target="_blank">
+      <img src="./assets/apollographql-icon.svg" class="logo vue" alt="Vue logo" />
+    </a>
+    <a href="" target="_blank">
+      <img src="./assets/graphql-icon.svg" class="logo vue" alt="Vue logo" />
+    </a>
+    <ApolloData />
   </div>
-  <ApolloData />
-  <!-- <ApolloDataMutationAdd /> -->
 </template>
 
 <style scoped>

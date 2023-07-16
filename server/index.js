@@ -12,7 +12,7 @@ const pubsub = new PubSub(); // 수정된 부분
 
 const typeDefs = gql`
   type Customer {
-    id: ID!
+    id: String!
     name: String!
     email: String!
     age: Int!
@@ -43,7 +43,7 @@ const resolvers = {
   Mutation: {
     addCustomer: (parent, args) => {
       const newCustomer = {
-        id: String(customers.length + 1),
+        id: String(Math.random() * 100),
         name: args.name,
         email: args.email,
         age: args.age,

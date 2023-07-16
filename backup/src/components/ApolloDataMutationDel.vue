@@ -35,7 +35,7 @@ export default {
     return {
       deletedCustomerId,
       deleteCustomer,
-      DeleteCustomer,
+      // DeleteCustomer,
       loading,
       error,
     };

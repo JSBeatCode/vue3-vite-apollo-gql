@@ -6,6 +6,7 @@ import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
 import { DefaultApolloClient, ApolloClients } from '@vue/apollo-composable';
+import 'bootstrap/dist/css/bootstrap.css';
 
 const httpLink = new HttpLink({
   uri: 'http://localhost:3586/graphql', // 첫 번째 GraphQL 서버의 주소로 변경해야 합니다.
