@@ -2,13 +2,13 @@
 import { computed, onMounted, onUpdated, ref, reactive } from 'vue'
 import { useQuery, useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
-import ApolloDataMutationAdd from './ApolloDataMutationAdd.vue';
+import ApolloDataAdd from './ApolloDataAdd.vue';
 import ApolloDataMutationUpdate from './ApolloDataMutationUpdate.vue';
 
 export default {
   name: 'ApolloData',
   components: {
-    ApolloDataMutationAdd,
+    ApolloDataAdd,
     ApolloDataMutationUpdate
   },
   setup () {
@@ -36,16 +36,25 @@ export default {
         }
     `
 
-    const getAll = useQuery(GET_ALL_QUERY);
+    const {} = useQuery(GET_ALL_QUERY);
 
     const { mutate: DeleteCustomer, loading, error } = useMutation(DELETE_QUERY);
 
     onUpdated(() => {
       // console.log("state의 변화가 있을 때마다 updated", state.customers)
+      // const getAll = useQuery(GET_ALL_QUERY);
+      // funcGetAll(getAll, 'onUpdated')
     })
 
     onMounted(() => {
       // onMounted 될때마다 실행하기 때문에 좋은 코드는 아니지만, 본 기초영상에서만 다음과 같이 코딩
+      
+      funcGetAll('onMounted')
+    })
+
+    const funcGetAll = (caller) => {
+      
+      console.log('caller::', caller)
       if (getAll && getAll !== null && getAll !== undefined){
         getAll.onResult((res) => {
           if (res.data?.getCustomers) {
@@ -57,7 +66,7 @@ export default {
           }
         })
       }
-    })
+    }
 
     const funcAdd = (val) => {
       // const refList = customersRef.value;
@@ -79,19 +88,21 @@ export default {
     }
 
 
-    const deleteCustomer = async (id) => {
+    const deleteCustomer = async (delId) => {
       try {
-        await DeleteCustomer({ id: id });
-        alert('delete completed: ', id)
-        state.customers = state.customers.filter(one => id !== one.id);
-        if(state.customer && state.customer.id){
-          console.log('customer exists', state.customer)
-          console.log(state.customer.id, id, state.customer.id===id)
-          if (state.customer.id === id) {
-            console.log('id is identical')
-            state.customer = {};
-          }
-        }
+        await DeleteCustomer({ id: delId });
+        alert('delete completed')
+        // const getAll = useQuery(GET_ALL_QUERY);
+        funcGetAll('deleteCustomer')
+        // state.customers = state.customers.filter(one => id !== one.id);
+        // if(state.customer && state.customer.id){
+        //   console.log('customer exists', state.customer)
+        //   console.log(state.customer.id, id, state.customer.id===id)
+        //   if (state.customer.id === id) {
+        //     console.log('id is identical')
+        //     state.customer = {};
+        //   }
+        // }
       } catch (error) {
         console.error('Error deleting customer:', error.message);
       }
@@ -107,6 +118,7 @@ export default {
         funcUpdate,
         funcUpdateStart,
         deleteCustomer,
+        funcGetAll
         // DeleteCustomer
     }
   },
@@ -148,7 +160,7 @@ export default {
       </div>
       
       <div class="col">
-        <ApolloDataMutationAdd 
+        <ApolloDataAdd 
           @funcAdd="funcAdd"
         />
       </div>

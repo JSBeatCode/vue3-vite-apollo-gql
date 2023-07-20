@@ -1,5 +1,6 @@
 <script setup>
 import ApolloData from './components/ApolloData.vue';
+import Test from './components/Test.vue';
 // import ApolloDataMutationAdd from './components/ApolloDataMutationAdd.vue';
 </script>
 
@@ -17,7 +18,8 @@ import ApolloData from './components/ApolloData.vue';
     <a href="" target="_blank">
       <img src="./assets/graphql-icon.svg" class="logo vue" alt="Vue logo" />
     </a>
-    <ApolloData />
+    <!-- <ApolloData /> -->
+    <Test />
   </div>
 </template>
 
