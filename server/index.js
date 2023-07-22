@@ -21,7 +21,7 @@ const typeDefs = gql`
 
   type Query {
     getCustomers: [Customer!]!
-    getCustomer(id: String!): Customer
+    getCustomer(id: ID!): Customer
   }
 
   type Mutation {
@@ -39,7 +39,7 @@ const resolvers = {
   Mutation: {
     addCustomer: (parent, args) => {
       const newCustomer = {
-        id: String(customers.length + 1),
+        id: String(Math.random() + 1),
         name: args.name,
         email: args.email,
         age: args.age,
