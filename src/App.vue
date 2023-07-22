@@ -1,7 +1,6 @@
 <script setup>
 import ApolloData from './components/ApolloData.vue';
 import Test from './components/Test.vue';
-// import ApolloDataMutationAdd from './components/ApolloDataMutationAdd.vue';
 </script>
 
 <template>
