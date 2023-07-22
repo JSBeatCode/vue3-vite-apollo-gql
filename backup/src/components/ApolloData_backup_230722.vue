@@ -1,10 +1,16 @@
-z
+
 <template>
   <div class="container-md">
 
-    <div v-if="getAllLoading" class="alert alert-info">Loading...</div>
+    <!-- <div v-if="loading" class="alert alert-info">Loading...</div> -->
 
-    <div v-else-if="getAllError" class="alert alert-danger">Error: {{ getAllError.message }}</div>
+    <!-- <div v-else-if="error" class="alert alert-danger">Error: {{ error.message }}</div> -->
+
+    <!-- <ul v-else-if="customersRef" class="list-group">
+      <li v-for="customer of customersRef" :key="customer.id" class="list-group-item">
+        {{ customer.id }} / {{ customer.name }} / {{ customer.email }}  / {{ customer.age }}
+      </li>
+    </ul> -->
 
     <div v-if="state.pageLoaded">page loaded</div>
 
@@ -16,35 +22,41 @@ z
           <span class="badge text-bg-danger" style="font-size: 8px;">delete</span>
         </h2>
         <ul class="list-group">
-          <li v-for="customer of state.customers" :key="customer.id" class="list-group-item list-group-item-action text-start">
+          <li v-for="customer of react.data" :key="customer.id" class="list-group-item list-group-item-action text-start">
             id: {{ customer.id }} | name: {{ customer.name }} | email: {{ customer.email }} | age: {{ customer.age }}
-            <button class="badge bg-success rounded-pill" @click="funcUpdate(customer.id)">
-              Update
+            <button class="badge bg-success rounded-pill" @click="funcUpdateStart(customer.id)">
+              U
             </button>
-            <button class="badge bg-danger rounded-pill" @click="funcDelete(customer.id)">
-              Delete
+            <button class="badge bg-danger rounded-pill" @click="funcDeleteCustomer(customer.id)">
+              X
             </button>
           </li>
         </ul>
       </div>
 
       <div class="row">
-
-        
-        <!-- <div class="col"> -->
-          <!-- <ApolloDataAdd 
-            @funcAdd="funcAdd"
-            /> -->
-            <!-- </div> -->
+        <div class="col">
+          <ul>
+            <li v-for="customer of react.data" :key="customer.id" class="list-group-item list-group-item-action text-start">
+              id: {{  customer.id }}
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="col">
+        <!-- <ApolloDataAdd 
+          @funcAdd="funcAdd"
+        /> -->
       </div>
     </div>
 
     <div class="row">
       <div class="col">
-        <ApolloDataMutationUpdate 
+        <!-- <ApolloDataMutationUpdate 
           @funcUpdate="funcUpdate"
           :customer="state.customer"
-        />
+        /> -->
       </div>
     </div>
   </div>
@@ -55,18 +67,24 @@ import { computed, onMounted, onUpdated, ref, reactive, watch } from 'vue'
 import { useQuery, useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import ApolloDataAdd from './ApolloDataAdd.vue';
-import ApolloDataUpdate from './ApolloDataUpdate.vue';
+import ApolloDataMutationUpdate from './ApolloDataMutationUpdate.vue';
 
 export default {
   name: 'ApolloData',
   components: {
     ApolloDataAdd,
-    ApolloDataUpdate
+    ApolloDataMutationUpdate
   },
   setup () {
+    // const customersRef = ref([]);
+    // const customersReactive = reactive([]);
     const state = ref({
       customers: [],
       customer: {}
+    });
+
+    const react = reactive({
+      data: []
     });
 
     const GET_ALL_QUERY = gql`
@@ -86,22 +104,14 @@ export default {
         }
     `
 
-    const { result: getAllRes, loading: getAllLoading, error: getAllError, refetch, onResult  } = useQuery(GET_ALL_QUERY);
+    const { result: getAllRes, getAllloading, getAllerror } = useQuery(GET_ALL_QUERY);
 
-    const { mutate: DeleteCustomer, loading: delLoading, error: delEerror, onDone } = useMutation(DELETE_QUERY);
+    const { mutate: DeleteCustomer, loading, error } = useMutation(DELETE_QUERY);
 
     watch(getAllRes, value => {
       console.log('--jsdno0 debug watch')
-    })
-
-    onResult(result => {
-      console.log('--jsdno0 debug onResult')
-      console.log(result)
-    })
-
-    onDone(result => {
-      console.log('--jsdno0 debug onDone')
-      console.log(result)
+      console.log(getAllRes)
+      console.log(value)
     })
 
     state.value.customers = computed(() => getAllRes.value?.getCustomers ?? [])
@@ -111,7 +121,8 @@ export default {
       // const getAll = useQuery(GET_ALL_QUERY);
       // funcGetAll(getAll, 'onUpdated')
       console.log('--jsdno0 debug onUpdated')
-      // console.log(react)
+      console.log(state.value.customers)
+      console.log(react)
       // if (!state.value.pageLoaded) {
       //   funcGetAll('onMounted')
       // } else {
@@ -125,25 +136,25 @@ export default {
       // funcGetAll('onMounted')
     })
 
-    state.value.customers = computed(() => getAllRes.value?.getCustomers ?? [])
+    react.data = computed(() => getAllRes.value?.getCustomers ?? [])
 
-    const funcGetAll = async (caller) => {
-      await refetch()
+    const funcGetAll = (caller) => {
+      
       console.log('caller::', caller)
 
       // react.data = [];
       // const { result } = useQuery(GET_ALL_QUERY);
-      // react.data = computed(() => getAllRes.value.getCustomers ?? []
+      react.data = computed(() => getAllRes.value.getCustomers ?? []
       // getAllRes.value?.getCustomers ?? []
       // {
       //   console.log('--jsdno0 debug computed')
       //   console.log(getAllRes.value)
       //   return getAllRes.value?.getCustomers ?? [];
       // }
-      // )
+      )
       
       console.log('--jsdno0 debug funcGetAll state.value.customers')
-      // console.log('3', react.data)
+      console.log('3', react.data)
       // state.value.customers = react.data;
 
       // state.value.pageLoaded = state.value.pageLoaded === true ? false : true
@@ -181,8 +192,8 @@ export default {
     // }
 
 
-    const funcDelete = async (delId) => {
-      console.log('--jsdno0 debug funcDelete')
+    const funcDeleteCustomer = async (delId) => {
+      console.log('--jsdno0 debug funcDeleteCustomer')
       console.log(delId)
       try {
         await DeleteCustomer({ id: delId });
@@ -207,18 +218,14 @@ export default {
         // customersRef,
         // customersReactive,
         state,
+        react,
         onMounted,
         onUpdated,
         funcAdd,
         // funcUpdate,
         // funcUpdateStart,
-        funcDelete,
-        funcGetAll,
-        refetch,
-        onResult,
-        onDone,
-        getAllLoading,
-        getAllError
+        funcDeleteCustomer,
+        funcGetAll
         // DeleteCustomer
     }
   },

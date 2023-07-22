@@ -1,19 +1,18 @@
-// const { ApolloServer, gql } = require('apollo-server-express');
-// const express = require('express');
-
 import express from 'express';
 import { ApolloServer, gql } from 'apollo-server-express';
+import { PubSub } from 'graphql-subscriptions'; // 수정된 부분
 import cors from 'cors';
-import customers from './data.mjs'
-
+import customers from './data.mjs';
 
 const app = express();
 
 customers;
 
+const pubsub = new PubSub(); // 수정된 부분
+
 const typeDefs = gql`
   type Customer {
-    id: ID!
+    id: String!
     name: String!
     email: String!
     age: Int!
@@ -21,13 +20,18 @@ const typeDefs = gql`
 
   type Query {
     getCustomers: [Customer!]!
-    getCustomer(id: String!): Customer
+    getCustomer(id: ID!): Customer
   }
 
   type Mutation {
     addCustomer(name: String!, email: String!, age: Int!): Customer
     updateCustomer(id: ID!, name: String, email: String, age: Int): Customer
-    deleteCustomer(id: ID!): String
+    deleteCustomer(id: ID!): ID
+  }
+
+  type Subscription {
+    customerAdded: Customer
+    customerDeleted: ID
   }
 `;
 
@@ -39,13 +43,14 @@ const resolvers = {
   Mutation: {
     addCustomer: (parent, args) => {
       const newCustomer = {
-        id: String(customers.length + 1),
+        id: String(Math.random() * 100),
         name: args.name,
         email: args.email,
         age: args.age,
       };
 
       customers.push(newCustomer);
+      pubsub.publish('CUSTOMER_ADDED', { customerAdded: newCustomer });
 
       return newCustomer;
     },
@@ -71,8 +76,17 @@ const resolvers = {
 
       const deletedCustomerId = customers[customerIndex].id;
       customers.splice(customerIndex, 1);
+      pubsub.publish('CUSTOMER_DELETED', { customerDeleted: deletedCustomerId });
 
       return deletedCustomerId;
+    },
+  },
+  Subscription: {
+    customerAdded: {
+      subscribe: () => pubsub.asyncIterator('CUSTOMER_ADDED'),
+    },
+    customerDeleted: {
+      subscribe: () => pubsub.asyncIterator('CUSTOMER_DELETED'),
     },
   },
 };

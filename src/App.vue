@@ -18,8 +18,8 @@ import Test from './components/Test.vue';
     <a href="" target="_blank">
       <img src="./assets/graphql-icon.svg" class="logo vue" alt="Vue logo" />
     </a>
-    <!-- <ApolloData /> -->
-    <Test />
+    <ApolloData />
+    <!-- <Test /> -->
   </div>
 </template>
 
