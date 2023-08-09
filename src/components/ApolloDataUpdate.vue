@@ -52,7 +52,7 @@
 
 <script>
 export default {
-  name: 'ApolloDataMutationUpdate',
+  name: 'ApolloDatUpdate',
   props:['customer'],
   setup(props, {emit}) {
 
